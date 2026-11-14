@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FiMail, FiLinkedin, FiGithub, FiPhone, FiCopy, FiCheck, FiClock, FiBriefcase, FiGlobe, FiSend, FiAlertCircle, FiArrowUpRight } from 'react-icons/fi'
+import { FiMail, FiLinkedin, FiGithub, FiPhone, FiCopy, FiCheck, FiClock, FiBriefcase, FiGlobe, FiSend, FiAlertCircle, FiMapPin } from 'react-icons/fi'
 import { useLang } from '../context/LangContext'
 import { profile } from '../data'
 import Eyebrow from './Eyebrow'
@@ -32,7 +32,7 @@ function Field({ k, label, error, children }) {
 }
 
 export default function Contact() {
-  const { t, u } = useLang()
+  const { t, u, lang } = useLang()
   const draft = useRef(loadDraft()).current
   const [f, setF] = useState({ name: draft.name || '', email: draft.email || '', message: draft.message || '' })
   const [hp, setHp] = useState('')
@@ -74,7 +74,20 @@ export default function Contact() {
     try {
       const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST', signal: ctrl.signal, headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ access_key: KEY, name: f.name.trim(), email: f.email.trim(), message: body, subject, from_name: 'Portfolio' }),
+        body: JSON.stringify({
+          access_key: KEY,
+          subject: `New message from ${f.name.trim()}: ${TOPICS_EN[topic]}`,
+          from_name: 'Hasan Sammour Portfolio',
+          replyto: f.email.trim(), // hitting Reply in your inbox answers the visitor directly
+          name: f.name.trim(),
+          email: f.email.trim(),
+          Topic: TOPICS_EN[topic],
+          message: f.message.trim(),
+          Language: lang === 'ar' ? 'Arabic' : 'English',
+          'Sent from': location.href,
+          'Sent at (Gaza time)': new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Gaza' }).format(new Date()),
+          botcheck: false,
+        }),
       })
       const data = await res.json()
       if (data.success) {
@@ -86,11 +99,6 @@ export default function Contact() {
 
   const notice = { error: u.contact.error, offline: u.contact.offline, wait: u.contact.wait }[status]
   const sent = status === 'sent'
-  const cards = [
-    { Icon: FiLinkedin, label: 'LinkedIn', sub: 'hasan-sammour', href: profile.linkedin },
-    { Icon: FiGithub, label: 'GitHub', sub: 'HasanSammour', href: profile.github },
-    { Icon: FiPhone, label: profile.phone, sub: t(profile.location), href: `tel:${profile.phone}`, ltr: true, wide: true },
-  ]
 
   return (
     <section id="contact" className="section contact-section">
@@ -103,33 +111,7 @@ export default function Contact() {
           <p className="lead narrow">{u.contact.lead}</p>
         </div>
 
-        <div className="contact">
-          <div className="contact-left">
-            <div className="c-facts">
-              {u.contact.facts.map(([k, v], i) => {
-                const Icon = factIcons[i]
-                return (
-                  <motion.div key={k} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
-                    <Icon /><div><small>{k}</small><b>{v}</b></div>
-                  </motion.div>
-                )
-              })}
-            </div>
-            <div className="mail-card">
-              <span className="mc-icon"><FiMail /></span>
-              <a href={`mailto:${profile.email}`} dir="ltr">{profile.email}</a>
-              <button type="button" onClick={copy} aria-live="polite">{copied ? <><FiCheck /> {u.contact.copied}</> : <><FiCopy /> {u.contact.copy}</>}</button>
-            </div>
-            <div className="c-cards">
-              {cards.map(({ Icon, label, sub, href, ltr, wide }, i) => (
-                <motion.a key={label} href={href} target={href.startsWith('http') ? '_blank' : undefined} rel="noreferrer" className={'c-card' + (wide ? ' wide' : '')}
-                  initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} whileHover={{ y: -4 }}>
-                  <Icon className="ci" /><FiArrowUpRight className="arr" /><span><b dir={ltr ? 'ltr' : undefined}>{label}</b><small>{sub}</small></span>
-                </motion.a>
-              ))}
-            </div>
-          </div>
-
+        <motion.div className="contact-card" initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.7 }}>
           {/* form and success state share one grid cell, so the card never changes height */}
           <div className="form-wrap">
             <form className={'form' + (sent ? ' gone' : '')} onSubmit={submit} noValidate inert={sent ? '' : undefined} aria-hidden={sent}>
@@ -173,7 +155,34 @@ export default function Contact() {
               )}
             </AnimatePresence>
           </div>
-        </div>
+
+          <aside className="panel">
+            <img className="panel-mark" src="/logo-large.png" alt="" aria-hidden />
+            <p className="panel-kicker">{u.contact.direct}</p>
+            <div className="panel-mail">
+              <a href={`mailto:${profile.email}`} dir="ltr">{profile.email}</a>
+              <button type="button" onClick={copy} aria-live="polite">{copied ? <><FiCheck /> {u.contact.copied}</> : <><FiCopy /> {u.contact.copy}</>}</button>
+            </div>
+            <ul className="panel-list">
+              <li><span><FiPhone /></span><a href={`tel:${profile.phone}`} dir="ltr">{profile.phone}</a></li>
+              <li><span><FiMapPin /></span>{t(profile.location)}</li>
+            </ul>
+            <div className="panel-facts">
+              {u.contact.facts.map(([k, v], i) => {
+                const Icon = factIcons[i]
+                return <div key={k}><Icon /><small>{k}</small><b>{v}</b></div>
+              })}
+            </div>
+            <div className="panel-social">
+              <small>{u.contact.follow}</small>
+              <div>
+                <a href={profile.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn"><FiLinkedin /></a>
+                <a href={profile.github} target="_blank" rel="noreferrer" aria-label="GitHub"><FiGithub /></a>
+                <a href={`mailto:${profile.email}`} aria-label="Email"><FiMail /></a>
+              </div>
+            </div>
+          </aside>
+        </motion.div>
       </div>
     </section>
   )
