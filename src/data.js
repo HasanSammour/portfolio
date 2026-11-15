@@ -11,7 +11,7 @@ const L = (en, ar) => ({ en, ar })
 export const profile = {
   first: L('Hasan', 'حسن'), last: L('Sammour', 'سمّور'),
   fullEn: 'Hasan Sammour', fullAr: 'حسن سمّور',
-  email: 'hasansammouro1@gmail.com', phone: '+972594720476', location: L('Gaza, Palestine', 'غزة، فلسطين'),
+  email: 'hasansammour01@gmail.com', phone: '+972594720476', location: L('Gaza, Palestine', 'غزة، فلسطين'),
   linkedin: 'https://www.linkedin.com/in/hasan-sammour-72657a3a1/', github: 'https://github.com/HasanSammour',
   photo: '/hasan.png', // replace with your suit version, same file name
 }

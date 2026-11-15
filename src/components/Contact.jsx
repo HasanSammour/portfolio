@@ -3,10 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { FiMail, FiLinkedin, FiGithub, FiPhone, FiCopy, FiCheck, FiClock, FiBriefcase, FiGlobe, FiSend, FiAlertCircle, FiMapPin } from 'react-icons/fi'
 import { useLang } from '../context/LangContext'
 import { profile } from '../data'
+import { WEB3FORMS_KEY } from '../config'
 import Eyebrow from './Eyebrow'
 
 // Posts to Web3Forms (free, no server needed). Without a key it falls back to opening the visitor's mail app.
-const KEY = import.meta.env.VITE_WEB3FORMS_KEY
+const KEY = WEB3FORMS_KEY
 const TOPICS_EN = ['Full-stack role', 'AI engineering', 'Technical support', 'Something else']
 const MAX = 1000, COOLDOWN = 30000, TIMEOUT = 12000
 const valid = {
@@ -40,6 +41,7 @@ export default function Contact() {
   const [touched, setTouched] = useState({})
   const [status, setStatus] = useState('idle') // idle | sending | sent | error | offline | wait
   const [copied, setCopied] = useState(false)
+  const [detail, setDetail] = useState('')
   const refs = { name: useRef(null), email: useRef(null), message: useRef(null) }
   const factIcons = [FiClock, FiBriefcase, FiGlobe]
 
@@ -54,6 +56,12 @@ export default function Contact() {
     try { await navigator.clipboard.writeText(profile.email); setCopied(true); setTimeout(() => setCopied(false), 1800) } catch {}
   }
 
+  const mailto = () => {
+    const subject = `Portfolio: ${TOPICS_EN[topic]} (${f.name.trim() || '...'})`
+    const body = `Topic: ${TOPICS_EN[topic]}\n\n${f.message.trim()}\n\n${f.name.trim()}\n${f.email.trim()}`
+    return `mailto:${profile.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+  }
+
   const submit = async (e) => {
     e.preventDefault()
     if (hp || status === 'sending') return // honeypot + double-submit guard
@@ -64,37 +72,38 @@ export default function Contact() {
     if (!navigator.onLine) { setStatus('offline'); return }
 
     const subject = `Portfolio: ${TOPICS_EN[topic]} (${f.name.trim()})`
-    const body = `Topic: ${TOPICS_EN[topic]}\n\n${f.message.trim()}`
-    if (!KEY) {
-      location.href = `mailto:${profile.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body + '\n\n' + f.name.trim() + '\n' + f.email.trim())}`
-      return
-    }
-    setStatus('sending')
+    if (!KEY) { location.href = mailto(); return }
+    setStatus('sending'); setDetail('')
     const ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), TIMEOUT)
     try {
-      const res = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST', signal: ctrl.signal, headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          access_key: KEY,
-          subject: `New message from ${f.name.trim()}: ${TOPICS_EN[topic]}`,
-          from_name: 'Hasan Sammour Portfolio',
-          replyto: f.email.trim(), // hitting Reply in your inbox answers the visitor directly
-          name: f.name.trim(),
-          email: f.email.trim(),
-          Topic: TOPICS_EN[topic],
-          message: f.message.trim(),
-          Language: lang === 'ar' ? 'Arabic' : 'English',
-          'Sent from': location.href,
-          'Sent at (Gaza time)': new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Gaza' }).format(new Date()),
-          botcheck: false,
-        }),
-      })
-      const data = await res.json()
+      // FormData is a "simple" request: no CORS preflight, so blockers and proxies interfere less than with JSON
+      const fd = new FormData()
+      fd.append('access_key', KEY)
+      fd.append('subject', `New message from ${f.name.trim()}: ${TOPICS_EN[topic]}`)
+      fd.append('from_name', 'Hasan Sammour Portfolio')
+      fd.append('name', f.name.trim())
+      fd.append('email', f.email.trim()) // Web3Forms uses this as Reply-To
+      fd.append('topic', TOPICS_EN[topic])
+      fd.append('message', f.message.trim())
+      fd.append('language', lang === 'ar' ? 'Arabic' : 'English')
+      fd.append('page', location.href)
+      fd.append('sent_at_gaza_time', new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Gaza' }).format(new Date()))
+      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd, signal: ctrl.signal, headers: { Accept: 'application/json' } })
+      const raw = await res.text()
+      let data
+      try { data = JSON.parse(raw) } catch { data = { success: false, message: `HTTP ${res.status}` } }
       if (data.success) {
         store.set('contact:last', String(Date.now())); store.del('contact:draft')
         setStatus('sent'); setF({ name: '', email: '', message: '' }); setTouched({}); setTopic(0)
-      } else setStatus('error')
-    } catch { setStatus(navigator.onLine ? 'error' : 'offline') } finally { clearTimeout(timer) }
+      } else {
+        console.error('[contact] Web3Forms rejected the request:', res.status, data)
+        setDetail(data.message || `HTTP ${res.status}`); setStatus('error')
+      }
+    } catch (e) {
+      console.error('[contact] request failed:', e)
+      setDetail(e.name === 'AbortError' ? 'Request timed out' : String(e.message || e))
+      setStatus(navigator.onLine ? 'error' : 'offline')
+    } finally { clearTimeout(timer) }
   }
 
   const notice = { error: u.contact.error, offline: u.contact.offline, wait: u.contact.wait }[status]
@@ -136,7 +145,12 @@ export default function Contact() {
               </Field>
               <input className="hp" tabIndex={-1} autoComplete="off" aria-hidden value={hp} onChange={(e) => setHp(e.target.value)} name="website" />
               <p className={'form-note' + (notice ? ' err' : '')} role="status" aria-live="polite">
-                {notice ? <><FiAlertCircle />{notice}</> : !KEY ? u.contact.hint : (f.message || f.name) ? u.contact.draft : ''}
+                {notice ? (
+                  <span><FiAlertCircle />{notice}
+                    {status === 'error' && detail && <code dir="ltr" className="err-detail">{detail}</code>}
+                    {(status === 'error' || status === 'offline') && <a className="fallback" href={mailto()}>{u.contact.fallback}</a>}
+                  </span>
+                ) : !KEY ? u.contact.hint : (f.message || f.name) ? u.contact.draft : ''}
               </p>
               <button className="btn btn-main send" type="submit" disabled={status === 'sending'}>
                 {status === 'sending' ? <><i className="spin" /> {u.contact.sending}</> : <>{u.contact.send} <FiSend /></>}

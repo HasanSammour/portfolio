@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><title>Email test</title>
+<style>
+  body{font:16px/1.6 system-ui,sans-serif;background:#081729;color:#EAF0F6;max-width:680px;margin:40px auto;padding:0 20px}
+  h1{font-size:24px} code,pre{background:#0c2036;border:1px solid #2a3f57;border-radius:8px;padding:2px 8px}
+  pre{padding:14px;white-space:pre-wrap;word-break:break-word}
+  button{background:#F25837;color:#fff;border:0;border-radius:999px;padding:12px 24px;font-size:16px;cursor:pointer}
+  .ok{color:#9EC347}.bad{color:#ff8a70}
+</style></head><body>
+<h1>Contact form test</h1>
+<p>This page is only for you: it runs in <code>npm run dev</code> and is <b>not</b> included in the production build.</p>
+<p>Key loaded from <code>.env</code>: <b id="k"></b></p>
+<p>Page origin: <code id="o"></code></p>
+<button id="go">Send a test email</button>
+<h3>Response from Web3Forms</h3>
+<pre id="out">(nothing sent yet)</pre>
+<script type="module">
+  const KEY = import.meta.env.VITE_WEB3FORMS_KEY || 'f67dcd5f-542e-4eee-8834-2d1615ea890f'
+  const $ = (id) => document.getElementById(id)
+  $('k').textContent = KEY ? 'yes (' + KEY.slice(0, 8) + '…' + KEY.slice(-4) + ')' : 'NO'
+  $('k').className = KEY ? 'ok' : 'bad'
+  $('o').textContent = location.origin
+  $('go').onclick = async () => {
+    const out = $('out'); out.textContent = 'Sending…'
+    try {
+      const fd = new FormData()
+      fd.append('access_key', KEY || '')
+      fd.append('subject', 'Test from portfolio email-test page')
+      fd.append('from_name', 'Hasan Sammour Portfolio')
+      fd.append('name', 'Test User'); fd.append('email', 'test@example.com')
+      fd.append('message', 'If you can read this in your inbox, the contact form works.')
+      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd, headers: { Accept: 'application/json' } })
+      const text = await res.text()
+      out.textContent = 'HTTP ' + res.status + '\n' + text
+    } catch (e) {
+      out.textContent = 'REQUEST FAILED BEFORE REACHING THE SERVER:\n' + e + '\n\nUsually an ad blocker / Brave Shields / VPN / firewall blocking api.web3forms.com.'
+    }
+  }
+</script></body></html>

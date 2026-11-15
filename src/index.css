@@ -553,3 +553,7 @@ main,.footer{position:relative;z-index:1}
 }
 .cert-badge{inset-inline-start:auto}
 .cert-hover{aspect-ratio:auto;top:0}
+
+.form-note span{display:block}
+.err-detail{display:block;margin-top:4px;font:12px ui-monospace,Menlo,monospace;opacity:.85;word-break:break-word}
+.fallback{display:inline-block;margin-top:6px;color:var(--leaf);text-decoration:underline;text-underline-offset:3px;font-weight:600}
