@@ -2,6 +2,7 @@ export const ui = {
   en: {
     nav: { about: 'About', skills: 'Skills', journey: 'Journey', projects: 'Projects', certificates: 'Certificates', contact: 'Contact' },
     langBtn: 'عربي', langLabel: 'التبديل إلى العربية', menu: 'Menu',
+    cv: { download: 'Download CV', short: 'CV', about: 'Download my CV (PDF)' },
     hero: { hi: 'Hi, I\u2019m', hello: 'Computer Engineer from Gaza', open: 'Open to work', work: 'See my work', contact: 'Get in touch' },
     eyebrow: { about: 'About me', skills: 'What I use', journey: 'My story', projects: 'Selected work', certs: 'Learning', contact: 'Contact' },
     about: {
@@ -28,6 +29,7 @@ export const ui = {
   ar: {
     nav: { about: 'نبذة', skills: 'المهارات', journey: 'المسيرة', projects: 'المشاريع', certificates: 'الشهادات', contact: 'تواصل' },
     langBtn: 'EN', langLabel: 'Switch to English', menu: 'القائمة',
+    cv: { download: 'تحميل السيرة الذاتية', short: 'السيرة', about: 'حمّل سيرتي الذاتية (PDF)' },
     hero: { hi: 'مرحباً، أنا', hello: 'مهندس حاسوب من غزة', open: 'متاح للعمل', work: 'شاهد أعمالي', contact: 'تواصل معي' },
     eyebrow: { about: 'نبذة عني', skills: 'أدواتي', journey: 'قصتي', projects: 'أعمال مختارة', certs: 'التعلّم', contact: 'تواصل' },
     about: {

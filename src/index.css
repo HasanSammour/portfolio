@@ -261,7 +261,7 @@ main,.footer{position:relative;z-index:1}
 .field input,.field textarea{width:100%;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:24px 14px 8px;resize:vertical;transition:border-color .2s}
 .field input:focus,.field textarea:focus{outline:none;border-color:var(--leaf);box-shadow:0 0 0 4px rgba(158,195,71,.14)}
 .field span{position:absolute;inset-inline-start:15px;top:15px;color:var(--mute);pointer-events:none;transition:.2s;font-size:16px}
-.field input:focus+span,.field input:not(:placeholder-shown)+span,.field textarea:focus+span,.field textarea:not(:placeholder-shown)+span{top:5px;font-size:12px;color:var(--leaf)}
+.field input:focus ~ span,.field input:not(:placeholder-shown) ~ span,.field textarea:focus ~ span,.field textarea:not(:placeholder-shown) ~ span{top:5px;font-size:12px;color:var(--leaf)}
 .hp{position:absolute;opacity:0;height:0;width:0;pointer-events:none}
 .form .btn{justify-self:start}
 .form-error{color:#ff8a70;font-size:15px}
@@ -398,7 +398,7 @@ main,.footer{position:relative;z-index:1}
 .f-err svg{flex:none}
 .count{position:absolute;inset-inline-end:12px;bottom:34px;font-style:normal;font-size:12px;color:var(--mute);pointer-events:none}
 .field textarea{padding-bottom:26px;min-height:132px}
-.field input:-webkit-autofill+span,.field textarea:-webkit-autofill+span{top:5px;font-size:12px;color:var(--leaf)}
+.field input:-webkit-autofill ~ span,.field textarea:-webkit-autofill ~ span{top:5px;font-size:12px;color:var(--leaf)}
 .field input:-webkit-autofill{-webkit-text-fill-color:var(--text);box-shadow:0 0 0 100px var(--bg) inset}
 .form-note{display:flex;align-items:center;gap:8px;min-height:44px;font-size:13.5px;line-height:1.5;color:var(--mute)}
 .form-note.err{color:#ff9d86}.form-note svg{flex:none}
@@ -557,3 +557,17 @@ main,.footer{position:relative;z-index:1}
 .form-note span{display:block}
 .err-detail{display:block;margin-top:4px;font:12px ui-monospace,Menlo,monospace;opacity:.85;word-break:break-word}
 .fallback{display:inline-block;margin-top:6px;color:var(--leaf);text-decoration:underline;text-underline-offset:3px;font-weight:600}
+
+/* ---------- CV buttons ---------- */
+.cv-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 15px;border-radius:999px;background:var(--leaf);color:#081729;font-weight:700;font-size:14px;transition:transform .2s,background .2s}
+.cv-btn:hover{transform:translateY(-2px);background:#b4db5e}
+.cv-btn svg{font-size:16px}
+.btn-cv{border:1px dashed rgba(158,195,71,.6);color:var(--leaf)}
+.btn-cv:hover{background:rgba(158,195,71,.12);border-color:var(--leaf)}
+.about-cv{margin-top:26px}
+.foot-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.foot-cv{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;border:1px solid rgba(158,195,71,.5);color:var(--leaf);font-size:14px;font-weight:600;transition:.2s}
+.foot-cv:hover{background:rgba(158,195,71,.12)}
+@media(max-width:420px){.nav{padding-inline:14px 8px}.cv-btn{padding:7px 12px}.lang-btn{padding:7px 11px}}
+/* cards that slide in start offset to the side; clip them so they never widen the page */
+main{overflow-x:hidden;overflow-x:clip}

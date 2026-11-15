@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { FiLinkedin, FiGithub, FiMail, FiArrowUp, FiGlobe } from 'react-icons/fi'
 import { useLang } from '../context/LangContext'
 import { profile } from '../data'
+import CvButton from './CvButton'
 
 const keys = ['about', 'skills', 'journey', 'projects', 'certificates', 'contact']
 
@@ -35,7 +36,10 @@ export default function Footer() {
             <a href={profile.github} target="_blank" rel="noreferrer" aria-label="GitHub"><FiGithub /></a>
             <a href={`mailto:${profile.email}`} aria-label="Email"><FiMail /></a>
           </div>
-          <button className="lang-btn" onClick={toggle} aria-label={u.langLabel}><FiGlobe /> {u.langBtn}</button>
+          <div className="foot-actions">
+            <CvButton className="foot-cv" />
+            <button className="lang-btn" onClick={toggle} aria-label={u.langLabel}><FiGlobe /> {u.langBtn}</button>
+          </div>
         </div>
       </div>
       <div className="wrap foot-bottom">

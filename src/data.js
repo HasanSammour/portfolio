@@ -13,6 +13,8 @@ export const profile = {
   fullEn: 'Hasan Sammour', fullAr: 'حسن سمّور',
   email: 'hasansammour01@gmail.com', phone: '+972594720476', location: L('Gaza, Palestine', 'غزة، فلسطين'),
   linkedin: 'https://www.linkedin.com/in/hasan-sammour-72657a3a1/', github: 'https://github.com/HasanSammour',
+  // CV file per language. Add an Arabic CV later: put it in /public and change the 'ar' path.
+  cv: { en: '/Hasan-Sammour-CV.pdf', ar: '/Hasan-Sammour-CV.pdf' },
   photo: '/hasan.png', // replace with your suit version, same file name
 }
 

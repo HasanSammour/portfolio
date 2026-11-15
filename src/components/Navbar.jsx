@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { FiGlobe } from 'react-icons/fi'
 import { useLang } from '../context/LangContext'
 import useActiveSection from '../hooks/useActiveSection'
+import CvButton from './CvButton'
 
 const ids = ['top', 'about', 'skills', 'journey', 'projects', 'certificates', 'contact']
 const keys = ids.slice(1)
@@ -32,6 +33,7 @@ export default function Navbar() {
         ))}
       </nav>
       <div className="nav-actions">
+        <CvButton className="cv-btn" label="short" />
         <button className="lang-btn" onClick={toggle} aria-label={u.langLabel}><FiGlobe /> {u.langBtn}</button>
         <button className={open ? 'nav-burger open' : 'nav-burger'} onClick={() => setOpen(!open)} aria-label={u.menu} aria-expanded={open}><span /><span /></button>
       </div>

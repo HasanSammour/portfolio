@@ -4,6 +4,7 @@ import { useLang } from '../context/LangContext'
 import { FiMapPin, FiBookOpen, FiGlobe } from 'react-icons/fi'
 import { stats, tickerLines } from '../data'
 import Eyebrow from './Eyebrow'
+import CvButton from './CvButton'
 import useTilt from '../hooks/useTilt'
 
 function Count({ n, suffix, active }) {
@@ -96,6 +97,7 @@ export default function About() {
                 )
               })}
             </ul>
+            <CvButton className="btn btn-main about-cv" label="about" />
           </motion.div>
           <motion.div className="about-card" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={view} transition={{ duration: 0.7, delay: 0.12 }}>
             <p className="lead first"><Hl text={u.about.p1} terms={u.about.mark} /></p>
