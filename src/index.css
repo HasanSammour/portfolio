@@ -571,3 +571,25 @@ main,.footer{position:relative;z-index:1}
 @media(max-width:420px){.nav{padding-inline:14px 8px}.cv-btn{padding:7px 12px}.lang-btn{padding:7px 11px}}
 /* cards that slide in start offset to the side; clip them so they never widen the page */
 main{overflow-x:hidden;overflow-x:clip}
+
+/* contact form: the message box grows to fill the card, so there is no dead space above the button */
+.contact-card .form{display:flex;flex-direction:column;gap:10px}
+.contact-card .form .two{display:grid}
+.field.grow{flex:1;display:flex;flex-direction:column;min-height:190px}
+.field.grow textarea{flex:1;min-height:150px;resize:none}
+.form-note{min-height:26px}
+/* subject field unfolds smoothly when "Something else" is chosen */
+.reveal{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .35s ease,opacity .3s ease;margin-top:-10px}
+.reveal.open{grid-template-rows:1fr;opacity:1;margin-top:0}
+.reveal-in{min-height:0;overflow:hidden;padding:4px;margin:-4px}
+/* tighter message box: error + counter live inside the box, so no dead strip above the button */
+.field.grow{min-height:130px}
+.field.grow textarea{min-height:100px}
+.field.grow .f-err{position:absolute;inset-inline-start:14px;bottom:8px;min-height:0;padding:0;pointer-events:none}
+.field.grow .count{bottom:8px}
+.form-note{min-height:22px}
+/* fixed card height on desktop: the message box absorbs the subject field, so the card never jumps */
+@media(min-width:901px){.contact-card .form{min-height:745px}}
+@media(max-width:900px){.field.grow{min-height:170px}}
+.field.grow{flex:1 1 0px}
+.field.grow textarea{flex:1 1 0px}
