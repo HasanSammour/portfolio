@@ -1,4 +1,5 @@
 import { MotionConfig, motion, useScroll, useSpring } from 'framer-motion'
+import { Analytics } from '@vercel/analytics/react'
 import Spotlight from './components/Spotlight'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
@@ -16,6 +17,7 @@ export default function App() {
   return (
     <MotionConfig reducedMotion="user">
       <motion.div className="progress" style={{ scaleX }} />
+      <Analytics />
       <Spotlight />
       <Navbar />
       <main>
