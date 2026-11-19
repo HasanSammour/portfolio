@@ -8,7 +8,7 @@ import CvButton from './CvButton'
 const ids = ['top', 'about', 'skills', 'journey', 'projects', 'certificates', 'contact']
 const keys = ids.slice(1)
 
-export default function Navbar() {
+export default function Navbar({ ready = true }) {
   const { u, toggle } = useLang()
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -19,7 +19,7 @@ export default function Navbar() {
     return () => removeEventListener('scroll', on)
   }, [])
   return (
-    <motion.header className={scrolled ? 'nav scrolled' : 'nav'} initial={{ y: -90, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 2.3, type: 'spring', stiffness: 90, damping: 16 }}>
+    <motion.header className={scrolled ? 'nav scrolled' : 'nav'} initial={{ y: -90, opacity: 0 }} animate={ready ? { y: 0, opacity: 1 } : { y: -90, opacity: 0 }} transition={{ delay: ready ? 2.3 : 0, type: 'spring', stiffness: 90, damping: 16 }}>
       <a href="#top" className="nav-logo" aria-label="Hasan Sammour">
         <img src="/logo.png" srcSet="/logo.png 1x, /logo@2x.png 2x" alt="" width="34" height="40" />
         <span>Hasan</span>

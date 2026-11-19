@@ -78,8 +78,8 @@ export const tickerLines = [
 export const journey = [
   { icon: FiBookOpen, when: L('2020 – 2026', '2020 – 2026'), tag: L('Foundation', 'الأساس'),
     title: L('Computer Engineering, Islamic University of Gaza', 'هندسة الحاسوب، الجامعة الإسلامية بغزة'),
-    text: L('Six years of engineering fundamentals: databases, algorithms and systems design, finished with an excellent 85.98% GPA. My graduation project, Tamman, put a 25-table backend into real use.',
-            'ست سنوات من أساسيات الهندسة: قواعد البيانات والخوارزميات وتصميم الأنظمة، وتخرجت بمعدل ممتاز 85.98%. وضع مشروع تخرجي «تمّان» خلفية من 25 جدولاً قيد الاستخدام الفعلي.'),
+    text: L('Five years of engineering fundamentals: databases, algorithms and systems design, finished with an excellent 85.98% GPA. My graduation project, Tamman, put a 25-table backend into real use.',
+            'خمس سنوات من أساسيات الهندسة: قواعد البيانات والخوارزميات وتصميم الأنظمة، وتخرجت بمعدل ممتاز 85.98%. وضع مشروع تخرجي «تمّان» خلفية من 25 جدولاً قيد الاستخدام الفعلي.'),
     chips: [L('GPA 85.98%', 'معدل 85.98%'), L('Tamman', 'مشروع تمّان'), L('Databases', 'قواعد البيانات')] },
   { icon: FiBriefcase, when: L('2025 – now', '2025 – الآن'), tag: L('First clients', 'أول العملاء'),
     title: L('Freelance Technical Consultant and Developer', 'مستشار تقني ومطوّر مستقل'),

@@ -10,18 +10,23 @@ import Projects from './components/Projects'
 import Certificates from './components/Certificates'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
+import useAssetsReady from './hooks/useAssetsReady'
+import { useLang } from './context/LangContext'
+import { profile } from './data'
 
 export default function App() {
   const { scrollYProgress } = useScroll()
   const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 24 })
+  const { lang } = useLang()
+  const ready = useAssetsReady(profile.photo, lang)
   return (
     <MotionConfig reducedMotion="user">
       <motion.div className="progress" style={{ scaleX }} />
       <Analytics />
       <Spotlight />
-      <Navbar />
+      <Navbar ready={ready} />
       <main>
-        <Hero />
+        <Hero ready={ready} />
         <About />
         <Skills />
         <Journey />

@@ -10,7 +10,7 @@ import CvButton from './CvButton'
 const word = { hidden: { y: '115%' }, show: (i) => ({ y: 0, transition: { delay: 2.0 + i * 0.14, duration: 0.8, ease: [0.2, 0.8, 0.2, 1] } }) }
 const fade = (d) => ({ initial: { opacity: 0, y: 18 }, animate: { opacity: 1, y: 0 }, transition: { delay: d, duration: 0.65, ease: 'easeOut' } })
 
-export default function Hero() {
+export default function Hero({ ready = true }) {
   const { t, u, lang } = useLang()
   const ref = useRef(null)
   const [tab, setTab] = useState('dev')
@@ -47,6 +47,7 @@ export default function Hero() {
       <div className="hero-inner">
         <motion.div className="hero-bg" style={{ scale: blobScale }} aria-hidden><i className="b1" /><i className="b2" /></motion.div>
         <div className="hero-main">
+          {!ready ? <div className="hero-loading" aria-hidden><i /></div> : (
           <div className="hero-grid">
             <motion.div className="stage" style={{ y: stageY, scale: stageScale, opacity: stageOpacity }}>
               {[0, 1, 2].map((i) => (
@@ -101,6 +102,7 @@ export default function Hero() {
               </motion.div>
             </motion.div>
           </div>
+          )}
         </div>
         <Marquee />
       </div>
